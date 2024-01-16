@@ -42,7 +42,6 @@ from .exception import NacosException, NacosRequestException
 from .listener import Event, SimpleListenerManager
 from .timer import NacosTimer, NacosTimerManager
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 DEBUG = False
@@ -1033,7 +1032,7 @@ class NacosClient:
         :param group_name:          分组名
         :param healthy_only:         是否只返回健康实例   否，默认为false
         """
-        logger.info("[list-naming-instance] service_name:%s, namespace:%s" % (service_name, self.namespace))
+        logger.debug("[list-naming-instance] service_name:%s, namespace:%s" % (service_name, self.namespace))
 
         params = {
             "serviceName": service_name,
@@ -1054,7 +1053,7 @@ class NacosClient:
         try:
             resp = self._do_sync_req("/nacos/v1/ns/instance/list", None, params, None, self.default_timeout, "GET", "naming")
             c = resp.read()
-            logger.info("[list-naming-instance] service_name:%s, namespace:%s, server response:%s" %
+            logger.debug("[list-naming-instance] service_name:%s, namespace:%s, server response:%s" %
                         (service_name, self.namespace, c))
             return json.loads(c.decode("UTF-8"))
         except HTTPError as e:
@@ -1099,7 +1098,7 @@ class NacosClient:
             raise
 
     def send_heartbeat(self, service_name, ip, port, cluster_name=None, weight=1.0, metadata=None, ephemeral=True,group_name=DEFAULT_GROUP_NAME):
-        logger.info("[send-heartbeat] ip:%s, port:%s, service_name:%s, namespace:%s" % (ip, port, service_name,
+        logger.debug("[send-heartbeat] ip:%s, port:%s, service_name:%s, namespace:%s" % (ip, port, service_name,
                                                                                         self.namespace))
         beat_data = {
             "serviceName": service_name,
@@ -1131,7 +1130,7 @@ class NacosClient:
         try:
             resp = self._do_sync_req("/nacos/v1/ns/instance/beat", None, params, None, self.default_timeout, "PUT", "naming")
             c = resp.read()
-            logger.info("[send-heartbeat] ip:%s, port:%s, service_name:%s, namespace:%s, server response:%s" %
+            logger.debug("[send-heartbeat] ip:%s, port:%s, service_name:%s, namespace:%s, server response:%s" %
                         (ip, port, service_name, self.namespace, c))
             return json.loads(c.decode("UTF-8"))
         except HTTPError as e:
